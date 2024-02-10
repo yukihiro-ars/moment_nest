@@ -20,12 +20,27 @@ def do_organize():
         # TODO ずっとDir判定されない場合の救済処置は検討
 
     # 指定フォルダ配下のファイル一覧を取得
-    files = glob.glob('*.*', root_dir=base_path, recursive=True)
+    files = glob.glob('**/*.*', root_dir=base_path, recursive=True)
+
+    dict_ext = {}
+    # 拡張子ごとに分類
     for file in files:
-        print(file)
+        # 拡張子取得
+        ext = file.rsplit('.', 1)[1]
+        # 拡張子ごとに分類
+        if ext not in dict_ext:
+            dict_ext[ext] = []
+        dict_ext[ext].append(file)
+
+    for ext in dict_ext.keys():
+        if ext in TARGET_EXT:
+            print(f'target ext = {ext}')
+        else:
+            print(f'not target ext = {ext}')
+        for file in dict_ext[ext]:
+            print(f'\t{file}')
 
     # ■処理内容検討
-    # 画像・動画ファイルとそうでないファイルの仕分け
     # ファイル全量の把握
     # Backupフォルダに退避してから処理開始(ファイルごとに実施する想定)
     # 画像の場合、EXIF、動画の場合は日付情報を取得して新規ファイル名の作成
