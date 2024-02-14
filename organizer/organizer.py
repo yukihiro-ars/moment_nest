@@ -46,19 +46,25 @@ def do_organize():
                 for file in dict_ext[ext]:
                     # TODO base_path末尾にスラッシュ指定された場合の対策検討
                     # https://gitlab.com/TNThieding/exif/-/issues/51
+                    # TODO デコレータどっかで使えないかな
+                    # https://qiita.com/mtb_beta/items/d257519b018b8cd0cc2e
+                    # TODO pingやmovは
+                    # https://docs.python.org/ja/3/library/stat.html
                     file_path = f'{base_path}\\{file}'
                     with open(file_path, 'rb') as file_stream:
                         print(file)
                         image_desc = Image(file_stream)
                         if image_desc.has_exif:
-                            if hasattr(image_desc, 'datetime_original'):
-                                print(image_desc.datetime_original)
-                            elif hasattr(image_desc, 'datetime'):
-                                print(image_desc.datetime)
-                            elif hasattr(image_desc, 'datetime_digitized'):
-                                print(image_desc.datetime_digitized)
-                            else:
-                                print('has no datetime')
+                            datetime = \
+                                get_attr_if_exists_props(image_desc,
+                                                         ['datetime_original',
+                                                          'datetime',
+                                                          'datetime_digitized']
+                                                         )
+                            if datetime is None:
+                                print('datetime is none')
+                                datetime = os.stat(file_path).st_mtime
+                            print(datetime)
                         else:
                             print('has no exif')
                 # フォルダ存在チェック＆フォルダ作成
@@ -73,3 +79,10 @@ def do_organize():
         print(e)
     finally:
         print('organizer処理完了')
+
+
+def get_attr_if_exists_props(item, props):
+    for attr in props:
+        if hasattr(item, attr):
+            return getattr(item, attr)
+    return None
