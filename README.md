@@ -5,3 +5,4 @@
 ## 依存関係
 - python 3.12.x
 - questionary <https://pypi.org/project/questionary/>
+- exif <https://gitlab.com/TNThieding/exif>
