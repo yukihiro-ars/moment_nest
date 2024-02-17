@@ -2,6 +2,8 @@
 import os
 import questionary
 import glob
+import re
+from datetime import datetime
 from tqdm import tqdm
 from exif import Image
 
@@ -60,18 +62,26 @@ def do_organize():
                         if ext in HAS_EXIF_EXT:
                             with open(file_path, 'rb') as file_stream:
                                 image_desc = Image(file_stream)
-                                datetime = None
+                                dt = None
                                 if image_desc.has_exif:
-                                    datetime = get_attr_if_exists_props(
+                                    dt = get_attr_if_exists_props(
                                         image_desc, DATETIME_EXIF_KEY)
-                        if datetime is None:
-                            datetime = file_stat.st_mtime
-                        if datetime is not None:
+                        if dt is None:
+                            dt = file_stat.st_mtime
+                        if dt is not None:
+                            # TODO 日付情報の形式を揃える
+                            # dt_str = None
+                            # if re.match(r'[0-9]{4}:[0-1][0-9]:[0-3][0-9]',
+                            #             dt):
+                            #     dt_str = re.sub(r'[:\s]', '', dt)
+                            # else:
+                            #     dt_str = datetime.fromtimestamp(str(dt)).\
+                            #         strftime('%Y%m%d_%H%M%S%f')
                             out_list.add(
-                                f'{datetime}_{file_stat.st_size}.{ext}')
+                                f'{dt}_{file_stat.st_size}.{ext}')
                         else:
                             print(f'is datetime none {file}')
-                    
+
                     # 関数判定 callable(func) = True
                     # TODO フォルダコピー移動関連　仕様から検討
                     # フォルダ存在チェック＆フォルダ作成
