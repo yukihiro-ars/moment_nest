@@ -2,12 +2,14 @@
 import os
 import questionary
 import glob
-
+from tqdm import tqdm
 from exif import Image
 
 TARGET_EXT = ['mp4', 'mov', 'jpeg', 'jpg', 'png', 'gif']
+HAS_EXIF_EXT = ['jpeg', 'jpg']
 MSG_SELECT_PATH_1 = '整理対象のフォルダを選択してください'
 MSG_SELECT_PATH_2 = 'フォルダ指定が不正です\nフォルダを再選択してください'
+DATETIME_EXIF_KEY = ['datetime_original', 'datetime', 'datetime_digitized']
 
 
 def do_organize():
@@ -19,7 +21,6 @@ def do_organize():
             base_path = questionary.text(msg).ask()
             print(base_path)
             isfirst = False
-
             # TODO ずっとDir判定されない場合の救済処置は検討
 
         # 指定フォルダ配下のファイル一覧を取得
@@ -35,50 +36,61 @@ def do_organize():
                 dict_ext[ext] = []
             dict_ext[ext].append(file)
 
-        # ファイル全量の把握
+        # 拡張子単位で処理
+        out_list = set()
         for ext in dict_ext.keys():
             length = len(dict_ext[ext])
+            # 対象拡張子に絞って処理続行
             if ext in TARGET_EXT:
-                print(f'target ext = {ext}, len = {length}')
-                # Backupフォルダに退避してから処理開始(ファイルごとに実施する想定)
-                # 画像の場合、EXIF、動画の場合は日付情報を取得して新規ファイル名の作成
-                # 動画向けライブラリの検討 https://github.com/kkroening/ffmpeg-python
-                for file in dict_ext[ext]:
-                    # TODO base_path末尾にスラッシュ指定された場合の対策検討
-                    # https://gitlab.com/TNThieding/exif/-/issues/51
-                    # TODO デコレータどっかで使えないかな
-                    # https://qiita.com/mtb_beta/items/d257519b018b8cd0cc2e
-                    # TODO pingやmovは
-                    # https://docs.python.org/ja/3/library/stat.html
-                    file_path = f'{base_path}\\{file}'
-                    with open(file_path, 'rb') as file_stream:
-                        print(file)
-                        image_desc = Image(file_stream)
-                        if image_desc.has_exif:
-                            datetime = \
-                                get_attr_if_exists_props(image_desc,
-                                                         ['datetime_original',
-                                                          'datetime',
-                                                          'datetime_digitized']
-                                                         )
-                            if datetime is None:
-                                print('datetime is none')
-                                datetime = os.stat(file_path).st_mtime
-                            print(datetime)
+                # TODO 余裕が出てきたらプログレスバーはtqdmをやめて自前で作ることも検討
+                with tqdm(total=length, desc=ext) as pbar:
+                    # Backupフォルダに退避してから処理開始(ファイルごとに実施する想定)
+                    # 画像の場合、EXIF、動画の場合は日付情報を取得して新規ファイル名の作成
+                    # 動画向けライブラリの検討 https://github.com/kkroening/ffmpeg-python
+                    for file in dict_ext[ext]:
+                        pbar.update(1)
+                        # TODO base_path末尾にスラッシュ指定された場合の対策検討
+                        # https://gitlab.com/TNThieding/exif/-/issues/51
+                        # TODO デコレータどっかで使えないかな
+                        # https://qiita.com/mtb_beta/items/d257519b018b8cd0cc2e
+                        file_path = f'{base_path}\\{file}'
+                        # https://docs.python.org/ja/3/library/stat.html
+                        file_stat = os.stat(file_path)
+                        # PNG拡張子の場合
+                        if ext in HAS_EXIF_EXT:
+                            with open(file_path, 'rb') as file_stream:
+                                image_desc = Image(file_stream)
+                                datetime = None
+                                if image_desc.has_exif:
+                                    datetime = get_attr_if_exists_props(
+                                        image_desc, DATETIME_EXIF_KEY)
+                        if datetime is None:
+                            datetime = file_stat.st_mtime
+                        if datetime is not None:
+                            out_list.add(
+                                f'{datetime}_{file_stat.st_size}.{ext}')
                         else:
-                            print('has no exif')
-                # フォルダ存在チェック＆フォルダ作成
-                # 画像コピー＆リネーム
-                # https://python-academia.com/file-transfer/
-                # https://qiita.com/kuroitu/items/f18acf87269f4267e8c1#%E8%87%AA%E5%88%86%E3%81%A7%E4%BD%9C%E3%81%A3%E3%81%A6%E3%81%BF%E3%82%8B
-                # 完了後Backupフォルダの対象ファイルを削除(ファイルごとに実施する想定)
+                            print(f'is datetime none {file}')
+                    
+                    # 関数判定 callable(func) = True
+                    # TODO フォルダコピー移動関連　仕様から検討
+                    # フォルダ存在チェック＆フォルダ作成
+                    # 画像コピー＆リネーム
+                    # https://python-academia.com/file-transfer/
+                    # https://qiita.com/kuroitu/items/f18acf87269f4267e8c1#%E8%87%AA%E5%88%86%E3%81%A7%E4%BD%9C%E3%81%A3%E3%81%A6%E3%81%BF%E3%82%8B
+                    # 完了後Backupフォルダの対象ファイルを削除(ファイルごとに実施する想定)
             else:
                 print(f'no target ext = {ext}, len = {length}')
                 # 対象外ファイルの退避処理
+
+        # outfile一覧
+        print(len(out_list))
+        for out in out_list:
+            print(out)
     except Exception as e:
         print(e)
     finally:
-        print('organizer処理完了')
+        print('the process has completed.')
 
 
 def get_attr_if_exists_props(item, props):
