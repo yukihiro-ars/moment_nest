@@ -51,6 +51,7 @@ def do_organize():
                     # 動画向けライブラリの検討 https://github.com/kkroening/ffmpeg-python
                     for file in dict_ext[ext]:
                         pbar.update(1)
+                        dt = None
                         # TODO base_path末尾にスラッシュ指定された場合の対策検討
                         # https://gitlab.com/TNThieding/exif/-/issues/51
                         # TODO デコレータどっかで使えないかな
@@ -62,30 +63,32 @@ def do_organize():
                         if ext in HAS_EXIF_EXT:
                             with open(file_path, 'rb') as file_stream:
                                 image_desc = Image(file_stream)
-                                dt = None
                                 if image_desc.has_exif:
                                     dt = get_attr_if_exists_props(
                                         image_desc, DATETIME_EXIF_KEY)
                         if dt is None:
                             dt = file_stat.st_mtime
                         if dt is not None:
-                            # TODO 日付情報の形式を揃える
-                            # dt_str = None
-                            # if re.match(r'[0-9]{4}:[0-1][0-9]:[0-3][0-9]',
-                            #             dt):
-                            #     dt_str = re.sub(r'[:\s]', '', dt)
-                            # else:
-                            #     dt_str = datetime.fromtimestamp(str(dt)).\
-                            #         strftime('%Y%m%d_%H%M%S%f')
+                            dt_dt = None
+                            if isinstance(dt, str):
+                                dt_dt = datetime.strptime(dt,
+                                                          '%Y:%m:%d %H:%M:%S')
+                            elif isinstance(dt, float):
+                                dt_dt = datetime.fromtimestamp(dt)
+                            else:
+                                raise Exception(
+                                    f'Unexpected dt type. file = {file_path}')
+                            dt_str = dt_dt.strftime('%Y%m%d_%H%M%S')
                             out_list.add(
-                                f'{dt}_{file_stat.st_size}.{ext}')
+                                f'{dt_str}_{file_stat.st_size}.{ext}')
                         else:
                             print(f'is datetime none {file}')
 
                     # 関数判定 callable(func) = True
                     # TODO フォルダコピー移動関連　仕様から検討
-                    # フォルダ存在チェック＆フォルダ作成
-                    # 画像コピー＆リネーム
+                    # datetime型オブジェクトより、年月のフォルダ名と%Y%m%d_%H%M%S_filesize.extのファイル名を作成
+                    # 変換後のファイル名と旧ファイル名（同じファイル名の存在を考慮し、listで保持）のマップを作成
+                    # 終端処理実施(画像コピー＆リネーム等)
                     # https://python-academia.com/file-transfer/
                     # https://qiita.com/kuroitu/items/f18acf87269f4267e8c1#%E8%87%AA%E5%88%86%E3%81%A7%E4%BD%9C%E3%81%A3%E3%81%A6%E3%81%BF%E3%82%8B
                     # 完了後Backupフォルダの対象ファイルを削除(ファイルごとに実施する想定)
