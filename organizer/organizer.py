@@ -46,9 +46,6 @@ def do_organize():
             if ext in TARGET_EXT:
                 # TODO 余裕が出てきたらプログレスバーはtqdmをやめて自前で作ることも検討
                 with tqdm(total=length, desc=ext) as pbar:
-                    # Backupフォルダに退避してから処理開始(ファイルごとに実施する想定)
-                    # 画像の場合、EXIF、動画の場合は日付情報を取得して新規ファイル名の作成
-                    # 動画向けライブラリの検討 https://github.com/kkroening/ffmpeg-python
                     for file in dict_ext[ext]:
                         pbar.update(1)
                         dt = None
@@ -59,15 +56,17 @@ def do_organize():
                         file_path = f'{base_path}\\{file}'
                         # https://docs.python.org/ja/3/library/stat.html
                         file_stat = os.stat(file_path)
-                        # PNG拡張子の場合
+                        # exifの日付情報を取得(jpgのみ)
                         if ext in HAS_EXIF_EXT:
                             with open(file_path, 'rb') as file_stream:
                                 image_desc = Image(file_stream)
                                 if image_desc.has_exif:
                                     dt = get_attr_if_exists_props(
                                         image_desc, DATETIME_EXIF_KEY)
+                        # exifから日付情報が取得できない場合は、ファイルの更新日時より取得
                         if dt is None:
                             dt = file_stat.st_mtime
+                        # 日付情報が取得できた場合
                         if dt is not None:
                             dt_dt = None
                             if isinstance(dt, str):
@@ -89,12 +88,13 @@ def do_organize():
                     # datetime型オブジェクトより、年月のフォルダ名と%Y%m%d_%H%M%S_filesize.extのファイル名を作成
                     # 変換後のファイル名と旧ファイル名（同じファイル名の存在を考慮し、listで保持）のマップを作成
                     # 終端処理実施(画像コピー＆リネーム等)
+                    # Backupフォルダに退避してから処理開始(ファイルごとに実施する想定)
                     # https://python-academia.com/file-transfer/
                     # https://qiita.com/kuroitu/items/f18acf87269f4267e8c1#%E8%87%AA%E5%88%86%E3%81%A7%E4%BD%9C%E3%81%A3%E3%81%A6%E3%81%BF%E3%82%8B
                     # 完了後Backupフォルダの対象ファイルを削除(ファイルごとに実施する想定)
             else:
-                print(f'no target ext = {ext}, len = {length}')
                 # 対象外ファイルの退避処理
+                print(f'no target ext = {ext}, len = {length}')
 
         # outfile一覧
         print(len(out_list))
