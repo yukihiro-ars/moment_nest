@@ -2,7 +2,7 @@
 import os
 import questionary
 import glob
-import re
+from pprint import pprint
 from datetime import datetime
 from tqdm import tqdm
 from exif import Image
@@ -39,7 +39,7 @@ def do_organize():
             dict_ext[ext].append(file)
 
         # 拡張子単位で処理
-        out_list = set()
+        dict_out = {}
         for ext in dict_ext.keys():
             length = len(dict_ext[ext])
             # 対象拡張子に絞って処理続行
@@ -56,6 +56,9 @@ def do_organize():
                         file_path = f'{base_path}\\{file}'
                         # https://docs.python.org/ja/3/library/stat.html
                         file_stat = os.stat(file_path)
+                        # 新名称フォーマット関数
+                        def new_f(p_dt): \
+                            return f'{p_dt}_{file_stat.st_size}.{ext}'
                         # exifの日付情報を取得(jpgのみ)
                         if ext in HAS_EXIF_EXT:
                             with open(file_path, 'rb') as file_stream:
@@ -68,18 +71,15 @@ def do_organize():
                             dt = file_stat.st_mtime
                         # 日付情報が取得できた場合
                         if dt is not None:
-                            dt_dt = None
-                            if isinstance(dt, str):
-                                dt_dt = datetime.strptime(dt,
-                                                          '%Y:%m:%d %H:%M:%S')
-                            elif isinstance(dt, float):
-                                dt_dt = datetime.fromtimestamp(dt)
-                            else:
+                            dt_dt = conv_datetime(dt)
+                            try:
+                                apply_file_part_by_file_new_old(
+                                    get_dict_dir_part_by_dt(dict_out, dt_dt),
+                                    new_f(dt_dt.strftime('%Y%m%d_%H%M%S')),
+                                    file_path)
+                            except Exception as e:
                                 raise Exception(
-                                    f'Unexpected dt type. file = {file_path}')
-                            dt_str = dt_dt.strftime('%Y%m%d_%H%M%S')
-                            out_list.add(
-                                f'{dt_str}_{file_stat.st_size}.{ext}')
+                                    f'has error {file_path}.{e}')
                         else:
                             print(f'is datetime none {file}')
 
@@ -95,19 +95,57 @@ def do_organize():
             else:
                 # 対象外ファイルの退避処理
                 print(f'no target ext = {ext}, len = {length}')
-
-        # outfile一覧
-        print(len(out_list))
-        for out in out_list:
-            print(out)
+        # pprint(dict_out)
+        for k1 in dict_out.keys():
+            for k2 in dict_out[k1].keys():
+                for k3 in dict_out[k1][k2].keys():
+                    old_len = len(dict_out[k1][k2][k3])
+                    if 1 < old_len:
+                        print(dict_out[k1][k2][k3])
+        print('success.')
     except Exception as e:
         print(e)
+        print('error.')
     finally:
         print('the process has completed.')
 
 
+def conv_datetime(dt):
+    if isinstance(dt, str):
+        return datetime.strptime(dt, '%Y:%m:%d %H:%M:%S')
+    elif isinstance(dt, float):
+        return datetime.fromtimestamp(dt)
+    else:
+        raise Exception('Unexpected dt type. at conv_datetime')
+
+
+def get_dict_dir_part_by_dt(dict_out, dt_dt):
+    try:
+        ym = dt_dt.strftime('%Y%m')
+        y = dt_dt.strftime('%Y')
+        if y not in dict_out:
+            dict_out[y] = {}
+        if ym not in dict_out[y]:
+            dict_out[y][ym] = {}
+        return dict_out[y][ym]
+    except Exception as e:
+        raise Exception(f'{e}. at get_dict_dir_part_by_dt')
+
+
+def apply_file_part_by_file_new_old(dict_dir, new, old):
+    try:
+        if new not in dict_dir:
+            dict_dir[new] = []
+        dict_dir[new].append(old)
+    except Exception as e:
+        raise Exception(f'{e}. apply_file_part_by_file_new_old')
+
+
 def get_attr_if_exists_props(item, props):
-    for attr in props:
-        if hasattr(item, attr):
-            return getattr(item, attr)
-    return None
+    try:
+        for attr in props:
+            if hasattr(item, attr):
+                return getattr(item, attr)
+        return None
+    except Exception as e:
+        raise Exception(f'{e}. get_attr_if_exists_props')
