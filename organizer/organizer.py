@@ -28,14 +28,13 @@ def do_organize():
             isfirst = False
             # TODO ずっとDir判定されない場合の救済処置は検討
 
-        # ベースディレクトリスキャン/拡張子単位で辞書型に分類
-        dict_ext = scan_base_dir(base_dir)
+        dict_ext = scan(base_dir)
 
+        # TODO 全体に例外処理の見直しが必要
         # TODO base_dir末尾にスラッシュ指定された場合の対策検討
         # full path format
         def full_f(relative_path): return f'{base_dir}\\{relative_path}'
 
-        # 整理計画取得(年/年月/ファイル)
         dict_plan = planning(dict_ext, full_f)
 
         # 整理計画確認
@@ -53,7 +52,11 @@ def do_organize():
         print('the process has completed.')
 
 
-def scan_base_dir(base_dir):
+def scan(base_dir):
+    ''' 
+    ベースディレクトリスキャン
+    拡張子単位で辞書型に分類
+    '''
     # 指定フォルダ配下のファイル一覧を取得
     files = glob.glob('**/*.*', root_dir=base_dir, recursive=True)
     dict_ext = {}
@@ -69,6 +72,11 @@ def scan_base_dir(base_dir):
 
 
 def planning(dict_ext, full_f):
+    '''
+    dict_ext：スキャン結果の辞書
+    full_f：絶対パス変換関数
+    整理計画取得(年/年月/ファイル)
+    '''
     dict_plan = {}
     for ext in dict_ext.keys():
         length = len(dict_ext[ext])
@@ -118,6 +126,12 @@ def planning(dict_ext, full_f):
 
 
 def conv_datetime(dt):
+    '''
+    dt：型不明の日付オブジェクト
+    文字型、float型の場合にdatetime型に変換
+    文字型の場合の期待形式：'%Y:%m:%d %H:%M:%S'
+    float型の場合の期待値：エポックミリ秒
+    '''
     if isinstance(dt, str):
         return datetime.strptime(dt, '%Y:%m:%d %H:%M:%S')
     elif isinstance(dt, float):
@@ -127,6 +141,12 @@ def conv_datetime(dt):
 
 
 def get_dict_dir_part_by_dt(dict_plan, dt_dt):
+    '''
+    dict_plan：辞書
+    dt_dt：datetime型の日付オブジェクト
+    辞書内に存在する対象日付の[%Y][%Y%m]で参照可能な要素を返却
+    要素が存在しない場合、辞書内に当該要素を追加して返却
+    '''
     try:
         ym = dt_dt.strftime('%Y%m')
         y = dt_dt.strftime('%Y')
@@ -140,6 +160,13 @@ def get_dict_dir_part_by_dt(dict_plan, dt_dt):
 
 
 def apply_file_part_by_file_new_old(dict_dir, new, old):
+    '''
+    dict_dir：ファイル格納する辞書要素
+    new：新ファイル
+    old：旧ファイル(元ファイル)
+    同一のデータが別名で登録されていた場合
+    旧ファイルは一つの新ファイルに対して複数紐づくことがある
+    '''
     try:
         if new not in dict_dir:
             dict_dir[new] = []
@@ -149,6 +176,12 @@ def apply_file_part_by_file_new_old(dict_dir, new, old):
 
 
 def get_attr_if_exists_props(item, props):
+    '''
+    item：アイテム
+    props：指定プロパティ（複数）
+    アイテムに指定プロパティの中のいずれかが存在する場合、
+    指定プロパティに紐づく値を返却
+    '''
     try:
         for attr in props:
             if hasattr(item, attr):
@@ -159,6 +192,10 @@ def get_attr_if_exists_props(item, props):
 
 
 def show_plan(dict_plan):
+    '''
+    dict_plan：整理計画
+    整理計画を表示
+    '''
     pprint(dict_plan)
     for k1 in dict_plan.keys():
         for k2 in dict_plan[k1].keys():
@@ -169,6 +206,10 @@ def show_plan(dict_plan):
 
 
 def exec_plan(dict_plan):
+    '''
+    dict_plan：整理計画
+    整理計画を実行
+    '''
     print('exec plan')
     # 関数判定 callable(func) = True
     # TODO フォルダコピー移動関連　仕様から検討
