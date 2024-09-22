@@ -2,7 +2,8 @@
 import os
 import questionary
 import glob
-from pprint import pprint
+import shutil
+from enum import Enum
 from datetime import datetime
 from tqdm import tqdm
 from exif import Image
@@ -16,16 +17,23 @@ MSG_EXEC_PLAN = '整理計画を実行しますか？'
 DATETIME_EXIF_KEY = ['datetime_original', 'datetime', 'datetime_digitized']
 
 
+class PlaneMode(Enum):
+    SHOW = 1
+    EXEC = 2
+    SAFE_EXEC = 3
+
+
+# entry point
 def do_organize():
     try:
         base_dir = None
-        isfirst = True
+        isFirst = True
         # ベースディレクトリ取得
         while base_dir is None or os.path.isdir(base_dir) is False:
-            msg = MSG_SELECT_PATH_1 if isfirst else MSG_SELECT_PATH_2
+            msg = MSG_SELECT_PATH_1 if isFirst else MSG_SELECT_PATH_2
             base_dir = questionary.text(msg).ask()
             print(base_dir)
-            isfirst = False
+            isFirst = False
             # TODO ずっとDir判定されない場合の救済処置は検討
 
         dict_ext = scan(base_dir)
@@ -39,11 +47,11 @@ def do_organize():
 
         # 整理計画確認
         if questionary.confirm(MSG_SHOW_PLAN).ask():
-            show_plan(dict_plan)
+            do_plan(PlaneMode.SHOW, dict_plan, full_f)
 
         # 整理計画実行
         if questionary.confirm(MSG_EXEC_PLAN).ask():
-            exec_plan(dict_plan)
+            do_plan(PlaneMode.EXEC, dict_plan, full_f)
 
         print('success.')
     except Exception as e:
@@ -53,7 +61,7 @@ def do_organize():
 
 
 def scan(base_dir):
-    ''' 
+    '''
     ベースディレクトリスキャン
     拡張子単位で辞書型に分類
     '''
@@ -191,32 +199,50 @@ def get_attr_if_exists_props(item, props):
         raise Exception(f'{e}. get_attr_if_exists_props')
 
 
-def show_plan(dict_plan):
+def do_plan(mode, dict_plan, full_f):
     '''
+    mode:SHOW,EXEC
     dict_plan：整理計画
+    full_f：絶対パス変換関数
     整理計画を表示
     '''
-    pprint(dict_plan)
-    for k1 in dict_plan.keys():
-        for k2 in dict_plan[k1].keys():
-            for k3 in dict_plan[k1][k2].keys():
-                old_len = len(dict_plan[k1][k2][k3])
-                if 1 < old_len:
-                    print(dict_plan[k1][k2][k3])
-
-
-def exec_plan(dict_plan):
-    '''
-    dict_plan：整理計画
-    整理計画を実行
-    '''
-    print('exec plan')
+    # TODO セーフモード指定で対応できるようにするか(ファイルごとに実施する想定)？
+    #   Backupフォルダに退避してから処理開始
+    #   処理完了後、Backupフォルダのファイル削除
     # 関数判定 callable(func) = True
-    # TODO フォルダコピー移動関連　仕様から検討
-    # datetime型オブジェクトより、年月のフォルダ名と%Y%m%d_%H%M%S_filesize.extのファイル名を作成
-    # 変換後のファイル名と旧ファイル名（同じファイル名の存在を考慮し、listで保持）のマップを作成
-    # 終端処理実施(画像コピー＆リネーム等)
-    # Backupフォルダに退避してから処理開始(ファイルごとに実施する想定)
     # https://python-academia.com/file-transfer/
     # https://qiita.com/kuroitu/items/f18acf87269f4267e8c1#%E8%87%AA%E5%88%86%E3%81%A7%E4%BD%9C%E3%81%A3%E3%81%A6%E3%81%BF%E3%82%8B
     # 完了後Backupフォルダの対象ファイルを削除(ファイルごとに実施する想定)
+    try:
+        cnt = 0
+        bk_cnt = 0
+        for d1 in dict_plan.keys():
+            if not os.path.isdir(full_f(d1)):
+                # TODO dirさくせい
+                print("test")
+            for d2 in dict_plan[d1].keys():
+                for new in dict_plan[d1][d2].keys():
+                    cnt += 1
+                    full_new = full_f(f'{d1}\\{d2}\\{new}')
+                    olds = dict_plan[d1][d2][new]
+                    full_old = full_f(olds[0])
+                    isexist_new = os.path.isfile(full_old)
+                    # リネーム
+                    print(f'cp {full_old} => {full_new} , is exist old = {isexist_new}')
+                    if mode == PlaneMode.EXEC:
+                        shutil.move(src=full_old, dst=full_new)
+                    # 重複データのバックアップ
+                    if 1 < len(olds):
+                        for old in olds:
+                            if olds[0] != old:
+                                bk_cnt += 1
+                                full_bk_src = full_f(old)
+                                full_bk_dst = full_f(f'{d1}\\{d2}\\bk\\{old}')
+                                print(f'backup {full_bk_src} => {full_bk_dst}')
+                                if mode == PlaneMode.EXEC:
+                                    shutil.move(src=full_bk_src, dst=full_bk_dst)
+        print(f'new count = {cnt}')
+        print(f'bk count = {bk_cnt}')
+        # TODO 終端処理 空のフォルダを削除
+    except Exception as e:
+        raise Exception(f'{e}. at do_plan')
