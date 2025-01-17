@@ -1,10 +1,14 @@
 
 # desital_contents_organizer
 
-- 画像・動画整理
-- CLIツール
+## 仕様
 
-## 実行手順
+- ファイルが持つ日付情報を抽出して、日付ごとにファイルを分類・整理するためのCLIツール
+- 整理対象フォルダを指定できる
+- 整理実行前に整理計画を確認する機能も含まれる
+- ファイルの日付、ファイルサイズ等の情報からハッシュ値を作成し、ファイルの一意性担保に利用する。(TBD)
+
+## 操作手順
 
 - ①ツール起動
 
@@ -32,13 +36,7 @@ no target ext = aae, len = 1
 
 ```bash
 ? 整理計画を確認しますか？ No
-cp {ファイルA Fromパス} => {Toパス}\{Yearパス}\{Monthパス}\{ファイルパス}.{拡張子}
+cp {ファイルA Fromパス} => {Toパス}\{Yearパス}\{## 仕様
+Monthパス}\{ファイルパス}.{拡張子}
 ex. cp C:\from\test\20221023-121500-000.mov => C:\To\test\2022\202210\20221023_121500_24069334.mov 
 ```
-
-## 依存関係
-
-- python 3.12.x
-- questionary <https://pypi.org/project/questionary/>
-- exif <https://gitlab.com/TNThieding/exif>
-- tqdm <https://pypi.org/project/tqdm/>
