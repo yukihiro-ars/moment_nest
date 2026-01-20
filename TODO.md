@@ -13,10 +13,10 @@
 - [x] README.md作成
 - [x] TODO.md作成（このファイル）
 - [x] DEVELOPMENT.md作成
-- [ ] ディレクトリ構造の作成
-- [ ] requirements.txt作成
-- [ ] config.json テンプレート作成
-- [ ] .gitignore 作成
+- [x] ディレクトリ構造の作成
+- [x] requirements.txt作成
+- [x] config.json テンプレート作成
+- [x] .gitignore 作成
 
 ### 共通モジュール基盤
 - [ ] `modules/__init__.py` 作成

@@ -1,0 +1,50 @@
+{
+  "paths": {
+    "source_dir": "Z:/Photos/source",
+    "organized_dir": "Z:/Photos/organized",
+    "workspace_dir": "C:/photo-organizer"
+  },
+
+  "network": {
+    "retry_count": 3,
+    "retry_delay": 5,
+    "connection_timeout": 300,
+    "batch_size": 50,
+    "checkpoint_interval": 100,
+    "connection_check_interval": 250
+  },
+
+  "performance": {
+    "hash_buffer_size": 65536,
+    "parallel_hash": false,
+    "low_priority_mode": true
+  },
+
+  "hash_optimization": {
+    "skip_unique_sizes": true,
+    "min_duplicate_count": 2
+  },
+
+  "incremental_mode": {
+    "scan_existing": true,
+    "skip_duplicates": true,
+    "continue_sequence": true,
+    "check_cross_folder": true
+  },
+
+  "supported_extensions": {
+    "image": [".jpg", ".jpeg", ".heic", ".png"],
+    "video": [".mp4", ".mov", ".3gp", ".m4v"]
+  },
+
+  "filename_pattern": "YYYYMMDDhhmmss-NN",
+
+  "lock": {
+    "auto_delete_hours": 24
+  },
+
+  "logging": {
+    "level": "INFO",
+    "file": "photo-organizer.log"
+  }
+}
