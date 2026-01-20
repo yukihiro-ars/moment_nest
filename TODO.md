@@ -76,43 +76,43 @@
 ## Phase 2: スキャン・分析機能
 
 ### 2.1 Phase 1a: メタデータスキャン（modules/scanner.py）
-- [ ] PhotoScanner クラス
-- [ ] source/ ディレクトリスキャン
-  - [ ] 再帰的ファイル検索
-  - [ ] 対応形式フィルタリング
-  - [ ] メタデータ抽出
-  - [ ] プログレスバー表示（tqdm）
-- [ ] organized/ 軽量スキャン
-  - [ ] ファイル名リスト作成
-  - [ ] ファイルサイズマップ作成
-- [ ] metadata_report.json 出力
-- [ ] existing_files.json 出力
-- [ ] warnings.txt 出力
+- [x] PhotoScanner クラス
+- [x] source/ ディレクトリスキャン
+  - [x] 再帰的ファイル検索
+  - [x] 対応形式フィルタリング
+  - [x] メタデータ抽出
+  - [x] プログレスバー表示（tqdm）
+- [x] organized/ 軽量スキャン
+  - [x] ファイル名リスト作成
+  - [x] ファイルサイズマップ作成
+- [x] metadata_report.json 出力
+- [x] existing_files.json 出力
+- [x] warnings.txt 出力
 
 ### 2.2 Phase 1b: ハッシュ計算（modules/scanner.py に追加）
-- [ ] サイズベースグループ化
-  - [ ] ファイルサイズでグループ化
-  - [ ] サイズ一意判定
-  - [ ] 重複サイズ抽出
-- [ ] ハッシュ計算（SHA-256）
-  - [ ] source/ 内の重複候補
-  - [ ] source/ vs organized/ の重複候補
-  - [ ] チェックポイント保存（100件ごと）
-  - [ ] 再開対応
-  - [ ] プログレスバー表示
-- [ ] hash_report.json 出力
-- [ ] 最適化統計情報出力
+- [x] サイズベースグループ化
+  - [x] ファイルサイズでグループ化
+  - [x] サイズ一意判定
+  - [x] 重複サイズ抽出
+- [x] ハッシュ計算（SHA-256）
+  - [x] source/ 内の重複候補
+  - [x] source/ vs organized/ の重複候補
+  - [x] チェックポイント保存（100件ごと）
+  - [x] 再開対応
+  - [x] プログレスバー表示
+- [x] hash_report.json 出力
+- [x] 最適化統計情報出力
 
 ### 2.3 Phase 1c: 分析（modules/scanner.py に追加）
-- [ ] メタデータ + ハッシュ統合
-- [ ] 重複検出
-  - [ ] source/ 内の重複
-  - [ ] source/ vs organized/ の重複
-- [ ] 統計情報生成
-  - [ ] ファイル数、日付範囲
-  - [ ] 形式別カウント
-- [ ] analysis_report.json 出力
-- [ ] duplicates.txt 出力（種別ごと）
+- [x] メタデータ + ハッシュ統合
+- [x] 重複検出
+  - [x] source/ 内の重複
+  - [x] source/ vs organized/ の重複
+- [x] 統計情報生成
+  - [x] ファイル数、日付範囲
+  - [x] 形式別カウント
+- [x] analysis_report.json 出力
+- [x] duplicates.txt 出力（種別ごと）
 
 ---
 
