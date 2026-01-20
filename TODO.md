@@ -119,32 +119,32 @@
 ## Phase 3: 整理計画・実行
 
 ### 3.1 Phase 2: 整理計画（modules/planner.py）
-- [ ] FilePlanner クラス
-- [ ] ファイル名生成ロジック
-  - [ ] YYYYMMDDhhmmss-NN 形式
-  - [ ] 連番決定（既存ファイル考慮）
-  - [ ] ファイル名衝突チェック
-- [ ] 重複ファイル処理
-  - [ ] source/ vs organized/ 重複はスキップ
-- [ ] ディスク容量チェック
-- [ ] organize_plan.txt 出力
-  - [ ] 移動計画リスト
-  - [ ] スキップファイルリスト
-  - [ ] 警告・エラー
-  - [ ] 必要容量
+- [x] FilePlanner クラス
+- [x] ファイル名生成ロジック
+  - [x] YYYYMMDDhhmmss-NN 形式
+  - [x] 連番決定（既存ファイル考慮）
+  - [x] ファイル名衝突チェック
+- [x] 重複ファイル処理
+  - [x] source/ vs organized/ 重複はスキップ
+- [x] ディスク容量チェック
+- [x] organize_plan.txt 出力
+  - [x] 移動計画リスト
+  - [x] スキップファイルリスト
+  - [x] 警告・エラー
+  - [x] 必要容量
 
 ### 3.2 Phase 3: 整理実行（modules/organizer.py）
-- [ ] FileOrganizer クラス
-- [ ] 年ごとのフォルダ作成
-- [ ] バッチ処理
-  - [ ] ファイルコピー（移動ではない）
-  - [ ] NAS接続確認（5バッチごと）
-  - [ ] リトライ処理
-- [ ] コピー後ハッシュ検証
-- [ ] チェックポイント保存
-- [ ] プログレスバー表示
-- [ ] organize_log.json 出力
-- [ ] success.txt / failed.txt 出力
+- [x] FileOrganizer クラス
+- [x] 年ごとのフォルダ作成
+- [x] バッチ処理
+  - [x] ファイルコピー（移動ではない）
+  - [x] NAS接続確認（5バッチごと）
+  - [x] リトライ処理
+- [x] コピー後ハッシュ検証
+- [x] チェックポイント保存
+- [x] プログレスバー表示
+- [x] organize_log.json 出力
+- [x] success.txt / failed.txt 出力
 
 ---
 
