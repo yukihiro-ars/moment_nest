@@ -115,7 +115,7 @@ class FileOrganizer:
             progress_callback=progress_callback
         )
 
-        for i, item in enumerate(iterator):
+        for i, item in iterator:
             original = item["original"]
             new_path = item["new_path"]
 

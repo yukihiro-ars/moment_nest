@@ -132,10 +132,13 @@ class NASFileHandler:
             if path.is_dir():
                 # ディレクトリの場合はリスト取得を試みる
                 list(path.iterdir())
-            else:
+                return True
+            elif path.is_file():
                 # ファイルの場合は存在確認
-                path.exists()
-            return True
+                return True
+            else:
+                # 存在しない場合はFalse
+                return False
         except self.RETRYABLE_EXCEPTIONS as e:
             logger.warning(f"接続確認失敗: {path} - {e}")
             return False
@@ -286,6 +289,11 @@ class NASFileHandler:
             "error": None,
         }
 
+        # 既に存在しない場合は成功とみなす
+        if not filepath.exists():
+            result["success"] = True
+            return result
+
         try:
             self._retry_operation(
                 filepath.unlink,
@@ -295,7 +303,7 @@ class NASFileHandler:
         except RetryExhaustedError as e:
             result["error"] = str(e)
         except FileNotFoundError:
-            # 既に存在しない場合は成功とみなす
+            # 削除中に消えた場合も成功とみなす
             result["success"] = True
         except Exception as e:
             result["error"] = str(e)
