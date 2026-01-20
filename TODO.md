@@ -32,44 +32,44 @@
 ## Phase 1: コアモジュール実装
 
 ### 1.1 メタデータ抽出（modules/metadata.py）
-- [ ] EXIF抽出クラス（画像用）
-  - [ ] JPEG, PNG対応
-  - [ ] HEIC対応
-  - [ ] DateTimeOriginal 取得
-  - [ ] カメラ機種、GPS情報取得（将来用）
-- [ ] 動画メタデータ抽出クラス
-  - [ ] MP4, MOV, 3GP, M4V対応
-  - [ ] creation_time 取得
-  - [ ] ffmpeg-python 使用
-- [ ] フォールバック処理
-  - [ ] EXIF失敗時にファイル作成日時使用
-  - [ ] エラーハンドリング
+- [x] EXIF抽出クラス（画像用）
+  - [x] JPEG, PNG対応
+  - [x] HEIC対応
+  - [x] DateTimeOriginal 取得
+  - [x] カメラ機種、GPS情報取得（将来用）
+- [x] 動画メタデータ抽出クラス
+  - [x] MP4, MOV, 3GP, M4V対応
+  - [x] creation_time 取得
+  - [x] ffmpeg-python 使用
+- [x] フォールバック処理
+  - [x] EXIF失敗時にファイル作成日時使用
+  - [x] エラーハンドリング
 
 ### 1.2 ネットワークハンドラー（modules/network.py）
-- [ ] NASFileHandler クラス
-  - [ ] リトライ機構（exponential backoff）
-  - [ ] タイムアウト設定
-  - [ ] 接続確認メソッド
-  - [ ] エラーハンドリング
-- [ ] バッチ処理サポート
-- [ ] 進捗コールバック対応
+- [x] NASFileHandler クラス
+  - [x] リトライ機構（exponential backoff）
+  - [x] タイムアウト設定
+  - [x] 接続確認メソッド
+  - [x] エラーハンドリング
+- [x] バッチ処理サポート
+- [x] 進捗コールバック対応
 
 ### 1.3 ロック管理（modules/lock.py）
-- [ ] LockManager クラス
-  - [ ] ロックファイル作成・削除
-  - [ ] ロック存在チェック
-  - [ ] 24時間自動削除確認
-  - [ ] PC名、開始時刻記録
-  - [ ] current_phase 更新メソッド
-- [ ] エラーメッセージ生成
-- [ ] ユーザー確認プロンプト
+- [x] LockManager クラス
+  - [x] ロックファイル作成・削除
+  - [x] ロック存在チェック
+  - [x] 24時間自動削除確認
+  - [x] PC名、開始時刻記録
+  - [x] current_phase 更新メソッド
+- [x] エラーメッセージ生成
+- [x] ユーザー確認プロンプト
 
 ### 1.4 チェックポイント管理（modules/utils.py に追加）
-- [ ] Checkpoint クラス
-  - [ ] JSON保存・読み込み
-  - [ ] 処理済みファイル記録
-  - [ ] 進捗率計算
-  - [ ] 再開判定
+- [x] Checkpoint クラス
+  - [x] JSON保存・読み込み
+  - [x] 処理済みファイル記録
+  - [x] 進捗率計算
+  - [x] 再開判定
 
 ---
 
