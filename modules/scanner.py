@@ -25,7 +25,6 @@ from .utils import (
     format_file_size,
     format_duration,
     get_file_extension,
-    calculate_hash,
 )
 
 logger = logging.getLogger(__name__)
