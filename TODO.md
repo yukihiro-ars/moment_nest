@@ -151,23 +151,23 @@
 ## Phase 4: クリーンアップ機能
 
 ### 4.1 Phase 5a: オリジナル削除（modules/cleaner.py）
-- [ ] FileCleaner クラス
-- [ ] organize_log.json 読み込み
-- [ ] 削除対象フィルタリング
-  - [ ] status="success" のみ
-  - [ ] hash_verified=true のみ
-- [ ] 削除前確認プロンプト
-- [ ] ファイル削除実行
-- [ ] 削除ログ出力
+- [x] FileCleaner クラス
+- [x] organize_log.json 読み込み
+- [x] 削除対象フィルタリング
+  - [x] status="success" のみ
+  - [x] hash_verified=true のみ
+- [x] 削除前確認プロンプト
+- [x] ファイル削除実行
+- [x] 削除ログ出力
 
 ### 4.2 Phase 5b: 重複削除（modules/cleaner.py に追加）
-- [ ] duplicates.txt 読み込み
-- [ ] 重複グループ表示
-- [ ] ユーザー選択UI
-  - [ ] 各グループで残すファイル選択
-  - [ ] または自動選択（最初のファイル）
-- [ ] 削除実行
-- [ ] 削除ログ出力
+- [x] duplicates.txt 読み込み
+- [x] 重複グループ表示
+- [x] ユーザー選択UI
+  - [x] 各グループで残すファイル選択
+  - [x] または自動選択（最初のファイル）
+- [x] 削除実行
+- [x] 削除ログ出力
 
 ---
 
