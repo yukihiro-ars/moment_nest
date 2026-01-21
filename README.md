@@ -148,7 +148,7 @@ photo-organizer/
 │
 ├── checkpoints/             # 処理状態の保存
 ├── reports/                 # レポート出力
-└── tests/                   # テスト（将来）
+└── tests/                   # 単体テスト
 ```
 
 ## トラブルシューティング
@@ -184,6 +184,23 @@ photo-organizer/
 pip install pillow-heif
 ```
 
+### 動画のメタデータが取得できない
+`ffmpeg` のインストールが必要です：
+
+**Windows**:
+1. [ffmpeg公式サイト](https://ffmpeg.org/download.html) からダウンロード
+2. 展開して `bin` フォルダを PATH に追加
+
+**macOS**:
+```bash
+brew install ffmpeg
+```
+
+**Linux**:
+```bash
+sudo apt-get install ffmpeg
+```
+
 ## レポートファイル
 
 処理中に生成されるレポートファイル：
@@ -214,14 +231,11 @@ pip install pillow-heif
 
 ## ライセンス
 
-（ライセンスを追加してください）
-
-## 作者
-
-（作者情報を追加してください）
+MIT License - 詳細は [LICENSE](LICENSE) を参照してください。
 
 ## 参考資料
 
 - [詳細仕様書](SPECIFICATION.md)
 - [開発者ガイド](DEVELOPMENT.md)
+- [変更履歴](CHANGELOG.md)
 - [開発タスク](TODO.md)

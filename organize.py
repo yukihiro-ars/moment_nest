@@ -9,6 +9,9 @@ Usage:
     python organize.py [--config CONFIG_PATH]
 """
 
+__version__ = "1.0.0"
+__author__ = "moment_nest contributors"
+
 import argparse
 import sys
 import logging

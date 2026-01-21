@@ -259,61 +259,61 @@
 - [x] SPECIFICATION.md 完成
 - [x] README.md 完成
 - [x] TODO.md 完成（このファイル）
-- [ ] DEVELOPMENT.md 完成
-- [ ] CHANGELOG.md 作成
-- [ ] コード内コメント追加
-- [ ] docstring 追加
+- [x] DEVELOPMENT.md 完成
+- [x] CHANGELOG.md 作成
+- [x] コード内コメント追加
+- [x] docstring 追加
 
 ### 7.2 リリース準備
-- [ ] バージョン番号設定（v1.0.0）
-- [ ] ライセンス決定・追加
-- [ ] config.json サンプル作成
-- [ ] インストール手順確認
-- [ ] トラブルシューティング追加
+- [x] バージョン番号設定（v1.0.0）
+- [x] ライセンス決定・追加
+- [x] config.json サンプル作成
+- [x] インストール手順確認
+- [x] トラブルシューティング追加
 
 ---
 
 ## 優先度付き タスク
 
 ### 🔴 High Priority（最優先）
-1. [ ] 基本構造セットアップ
-2. [ ] metadata.py 実装
-3. [ ] scanner.py（Phase 1a）実装
-4. [ ] 対話モード基本フロー
+1. [x] 基本構造セットアップ
+2. [x] metadata.py 実装
+3. [x] scanner.py（Phase 1a）実装
+4. [x] 対話モード基本フロー
 
 ### 🟡 Medium Priority（重要）
-5. [ ] network.py（リトライ機構）実装
-6. [ ] scanner.py（Phase 1b, 1c）実装
-7. [ ] planner.py 実装
-8. [ ] organizer.py 実装
-9. [ ] lock.py 実装
+5. [x] network.py（リトライ機構）実装
+6. [x] scanner.py（Phase 1b, 1c）実装
+7. [x] planner.py 実装
+8. [x] organizer.py 実装
+9. [x] lock.py 実装
 
 ### 🟢 Low Priority（後回し可）
-10. [ ] cleaner.py 実装
-11. [ ] 単体テスト
-12. [ ] ドキュメント整備
+10. [x] cleaner.py 実装
+11. [x] 単体テスト
+12. [x] ドキュメント整備
 
 ---
 
 ## マイルストーン
 
 ### Milestone 1: 基本スキャン機能（1週間）
-- [ ] Phase 1a（メタデータスキャン）動作
-- [ ] レポート出力確認
+- [x] Phase 1a（メタデータスキャン）動作
+- [x] レポート出力確認
 
 ### Milestone 2: 重複検出機能（1週間）
-- [ ] Phase 1b（ハッシュ計算）動作
-- [ ] Phase 1c（分析）動作
-- [ ] 最適化効果確認
+- [x] Phase 1b（ハッシュ計算）動作
+- [x] Phase 1c（分析）動作
+- [x] 最適化効果確認
 
 ### Milestone 3: 整理機能（1週間）
-- [ ] Phase 2（計画）動作
-- [ ] Phase 3（実行）動作
-- [ ] ネットワーク安定性確認
+- [x] Phase 2（計画）動作
+- [x] Phase 3（実行）動作
+- [x] ネットワーク安定性確認
 
 ### Milestone 4: 完成（1週間）
-- [ ] Phase 5（クリーンアップ）動作
-- [ ] 対話モード完成
+- [x] Phase 5（クリーンアップ）動作
+- [x] 対話モード完成
 - [ ] 実環境テスト完了
 - [ ] v1.0 リリース
 
